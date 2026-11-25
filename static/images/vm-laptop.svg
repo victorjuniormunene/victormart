@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#e8f4ff"/><stop offset="1" stop-color="#d8e6ff"/></linearGradient><linearGradient id="screen" x2="1" y2="1"><stop stop-color="#11b8a6"/><stop offset="1" stop-color="#3966e8"/></linearGradient></defs>
+  <rect width="640" height="480" rx="28" fill="url(#bg)"/>
+  <circle cx="504" cy="104" r="63" fill="#fff" opacity=".5"/>
+  <rect x="148" y="88" width="344" height="238" rx="18" fill="#27324b"/>
+  <rect x="162" y="102" width="316" height="206" rx="9" fill="url(#screen)"/>
+  <path d="M197 267c60-120 128-89 191-157v198H197z" fill="#fff" opacity=".2"/>
+  <circle cx="387" cy="171" r="44" fill="#ffd28c" opacity=".9"/>
+  <path d="M106 334h428l-34 42H140z" fill="#8794aa"/>
+  <path d="M223 335h194l-16 21H239z" fill="#dce4ef"/>
+  <text x="320" y="433" text-anchor="middle" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#24324b">COMPUTERS &amp; LAPTOPS</text>
+</svg>

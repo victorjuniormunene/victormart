@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="supplier-dashboard">
+  <div class="container">
+    <section class="section-card">
+      <h1>Remove product from storefront</h1>
+      <p>Hide <strong>{{ product.name }}</strong> from shoppers? Existing orders and M-Pesa receipts will be kept. You can restore the listing later by editing it.</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-danger">Remove from storefront</button>
+        <a href="{% url 'dashboard:supplier_dashboard' %}" class="btn-secondary">Cancel</a>
+      </form>
+    </section>
+  </div>
+</div>
+{% endblock %}

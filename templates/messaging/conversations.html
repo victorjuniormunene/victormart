@@ -1,0 +1,451 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.page-header {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #16213e 100%);
+  padding: 2.5rem;
+  border-radius: 24px;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.6s ease-out;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 90% 10%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 10% 90%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 127, 49, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
+.page-header-content {
+  position: relative;
+  z-index: 1;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  letter-spacing: -0.5px;
+}
+
+.page-title-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #ff6b6b, #ffa502);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.35);
+  animation: pulse 2s infinite;
+}
+
+.page-subtitle {
+  color: rgba(255,255,255,0.7);
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.back-button:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-4px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.conversation-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  border: 2px solid transparent;
+  animation: fadeInUp 0.5s ease-out;
+  animation-fill-mode: both;
+  position: relative;
+  overflow: hidden;
+}
+
+.conversation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #ff6b6b, #ffa502);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.conversation-card:nth-child(1) { animation-delay: 0.08s; }
+.conversation-card:nth-child(2) { animation-delay: 0.12s; }
+.conversation-card:nth-child(3) { animation-delay: 0.16s; }
+.conversation-card:nth-child(4) { animation-delay: 0.2s; }
+.conversation-card:nth-child(5) { animation-delay: 0.24s; }
+
+.conversation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+  border-color: rgba(255, 107, 107, 0.15);
+}
+
+.conversation-card:hover::before {
+  opacity: 1;
+}
+
+.conversation-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1a3e, #16213e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  position: relative;
+}
+
+.conversation-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background: #2ed573;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.unread-badge {
+  background: linear-gradient(135deg, #ff6b6b, #ff4757);
+  color: white;
+  border-radius: 50%;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 30px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
+  animation: pulse 2s infinite;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.status-completed { 
+  background: #2ed573; 
+  box-shadow: 0 0 10px rgba(46, 213, 115, 0.5); 
+}
+.status-shipped { 
+  background: #ffa502; 
+  box-shadow: 0 0 10px rgba(255, 165, 2, 0.5); 
+}
+.status-paid { 
+  background: #4ecdc4; 
+  box-shadow: 0 0 10px rgba(78, 205, 196, 0.5); 
+}
+.status-pending { 
+  background: #ff6b6b; 
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.5); 
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.status-badge.pending { 
+  background: linear-gradient(135deg, #ffe5e5, #fff0f0); 
+  color: #ff4757; 
+}
+.status-badge.paid { 
+  background: linear-gradient(135deg, #e0f7fa, #e8f4f4); 
+  color: #0abde3; 
+}
+.status-badge.shipped { 
+  background: linear-gradient(135deg, #fff8e8, #fffbf0); 
+  color: #ffa502; 
+}
+.status-badge.completed { 
+  background: linear-gradient(135deg, #e8f9ef, #f0fff4); 
+  color: #2ed573; 
+}
+
+.empty-state {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+  animation: fadeInUp 0.6s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-state::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,107,107,0.03) 0%, transparent 50%);
+  animation: pulse 4s infinite;
+}
+
+.empty-state-icon {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 2rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.empty-state h3 {
+  color: #1a1a3e;
+  font-size: 1.6rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.empty-state p {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, #ff6b6b, #ffa502);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(255, 107, 107, 0.4);
+}
+
+.message-preview {
+  color: #555;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 450px;
+  font-weight: 400;
+}
+
+.conversation-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.conversation-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #888;
+  font-size: 0.82rem;
+}
+
+.order-badge {
+  background: linear-gradient(135deg, #1a1a3e, #16213e);
+  color: white;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+  .page-title { font-size: 1.5rem; }
+  .page-title-icon { width: 46px; height: 46px; font-size: 1.4rem; }
+  .conversation-avatar { width: 50px; height: 50px; font-size: 1.3rem; }
+  .message-preview { max-width: 200px; }
+  .page-header { padding: 1.75rem; }
+  .conversation-card { padding: 1.25rem; }
+}
+</style>
+
+<div class="container" style="max-width: 950px; margin: 0 auto; padding: 2rem 1rem;">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <a href="{% url 'dashboard:customer_dashboard' %}" class="back-button">
+        <span>←</span> Back to Dashboard
+      </a>
+      <div class="page-title">
+        <div class="page-title-icon">💬</div>
+        <div>
+          <div>My Messages</div>
+          <div style="font-size: 0.85rem; font-weight: 400; opacity: 0.7; margin-top: 0.25rem;">Connect with your suppliers</div>
+        </div>
+      </div>
+      <p class="page-subtitle">View and manage conversations about your orders</p>
+    </div>
+  </div>
+
+  {% if conversations %}
+    {% for conversation in conversations %}
+      <a href="{% url 'messaging:conversation_detail' conversation.id %}" class="conversation-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 1.25rem; flex: 1;">
+            <!-- Avatar -->
+            <div class="conversation-avatar">
+              {{ conversation.supplier.username|make_list|first|upper }}
+            </div>
+            
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                <span class="order-badge">Order #{{ conversation.order.order_number }}</span>
+                <span class="status-badge {{ conversation.order.status }}">
+                  {{ conversation.order.get_status_display }}
+                </span>
+              </div>
+              
+              <p class="message-preview">
+                {% if conversation.last_message %}
+                  {{ conversation.last_message.content|truncatechars:60 }}
+                {% else %}
+                  No messages yet
+                {% endif %}
+              </p>
+              
+              <div class="conversation-meta">
+                <span class="conversation-meta-item">
+                  <span>🏢</span> {{ conversation.supplier.username }}
+                </span>
+                <span class="conversation-meta-item">
+                  <span>📦</span> {{ conversation.order.product.name|default:'N/A'|truncatechars:25 }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.6rem;">
+            {% if conversation.unread_count > 0 %}
+              <span class="unread-badge">{{ conversation.unread_count }}</span>
+            {% endif %}
+            <span style="color: #999; font-size: 0.8rem; font-weight: 500;">
+              {{ conversation.updated_at|date:'M d, Y' }}
+            </span>
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">💬</div>
+      <h3>No conversations yet</h3>
+      <p>Start a conversation by clicking "Message Supplier" on any of your orders.<br>Our suppliers typically respond within 24 hours.</p>
+      <a href="{% url 'dashboard:customer_dashboard' %}" class="btn-primary">
+        Go to Dashboard →
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

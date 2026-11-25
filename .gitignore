@@ -1,0 +1,44 @@
+__pycache__/
+*.py[cod]
+*.log
+.venv/
+venv/
+ENV/
+env/
+.env
+.env.*
+!.env.example
+*.sqlite3
+*.sqlite3-journal
+/media/
+/staticfiles/
+/tmp/
+/Pricing,
+/apps/orders/sms_utils.py exact structure to ensure proper file editing_
+.pytest_cache/
+.coverage
+htmlcov/
+.vscode/
+.idea/
+
+# Local admin and payment test scripts may contain demo credentials or operate on live data.
+/test_*.py
+/create_admin2.py
+/create_new_users.py
+/list_suppliers_with_passwords.py
+/remove_all_users.py
+/update_all_supplier_passwords.py
+/update_supplier_passwords.py
+/update_customer_users.py
+/update_supplier_users.py
+
+# These legacy setup reports include default account credentials.
+/COMPLETE_DATABASE_SETUP_GUIDE.md
+/DATABASE_READY_TESTING_GUIDE.md
+/FINAL_VERIFICATION_SUMMARY.md
+/ORDER_FLOW_VISUAL_GUIDE.md
+/ORDER_SUBMISSION_VERIFICATION.md
+/ORDER_VISIBILITY_FIXED.md
+/QUICK_START_RECEIPT_SYSTEM.md
+/SUPPLIER_DASHBOARD_HOW_TO.md
+/SUPPLIER_ORDERS_README.md

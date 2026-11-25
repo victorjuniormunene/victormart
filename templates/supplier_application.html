@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container" style="max-width: 900px; margin: 3rem auto; padding: 2rem;">
+  <section class="dashboard-card" style="padding: 2.5rem;">
+    <h1 style="color: var(--text);">Become a VictorMart Supplier</h1>
+    <p style="color: var(--text-light); font-size: 1.1rem;">
+      Create a supplier account to list products, manage your inventory, and receive customer orders.
+    </p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 2rem 0;">
+      <article style="padding: 1.25rem; border: 1px solid #e5e7eb; border-radius: 12px;">
+        <h2>Free supplier plan</h2>
+        <p>Post up to 100 products in each rolling 7-day period. Each listing is visible to up to 50 unique customer accounts per calendar week. Contact customers through WhatsApp.</p>
+      </article>
+      <article style="padding: 1.25rem; border: 2px solid #ff7f31; border-radius: 12px;">
+        <h2>Premium · KES 500 / 7 days</h2>
+        <p>Post up to 300 products in each rolling 7-day period, reach all customers, and use VictorMart in-site messaging. Premium begins after M-Pesa confirms payment.</p>
+      </article>
+    </div>
+    <a class="btn-primary" href="{% url 'accounts:register' %}?role=supplier">Create Supplier Account</a>
+    <p style="margin-top: 1.5rem;">Already registered? <a href="{% url 'accounts:supplier_login' %}">Sign in as a supplier</a> to subscribe or manage your products.</p>
+  </section>
+</main>
+{% endblock %}

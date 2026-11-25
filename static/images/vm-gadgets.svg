@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#eeeaff"/><stop offset="1" stop-color="#ddd8ff"/></linearGradient><linearGradient id="case" x2="1" y2="1"><stop stop-color="#423b72"/><stop offset="1" stop-color="#7468c9"/></linearGradient></defs>
+  <rect width="640" height="480" rx="28" fill="url(#bg)"/>
+  <circle cx="500" cy="92" r="56" fill="#fff" opacity=".55"/>
+  <path d="M182 210v-24c0-77 62-139 138-139s138 62 138 139v24h-43v-24c0-53-43-96-95-96s-95 43-95 96v24z" fill="#293047"/>
+  <rect x="157" y="190" width="88" height="165" rx="35" fill="url(#case)"/>
+  <rect x="395" y="190" width="88" height="165" rx="35" fill="url(#case)"/>
+  <rect x="175" y="211" width="52" height="91" rx="24" fill="#d7ccff"/>
+  <rect x="413" y="211" width="52" height="91" rx="24" fill="#d7ccff"/>
+  <circle cx="201" cy="329" r="7" fill="#fff"/>
+  <circle cx="439" cy="329" r="7" fill="#fff"/>
+  <path d="M195 404h250" stroke="#9e8fe3" stroke-width="9" stroke-linecap="round"/>
+  <text x="320" y="452" text-anchor="middle" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#3c356b">ELECTRONICS &amp; GADGETS</text>
+</svg>

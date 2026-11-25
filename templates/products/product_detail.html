@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+  <div class="dashboard-section">
+    <!-- Breadcrumb -->
+    <div style="margin-bottom: 2rem;">
+      <a href="{% url 'products:product_list' %}" style="color: var(--text-light); text-decoration: none;">← Back to Products</a>
+    </div>
+
+    <!-- Product Details -->
+    <div class="dashboard-card" style="margin-bottom: 2rem;">
+      <h3 style="color: var(--text); margin-bottom: 1rem;">{{ product.name }}</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+        <div>
+          {% if product.image_url %}
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          {% elif product.category == 'phones' %}
+            <img src="{% static 'images/vm-phone.svg' %}" alt="{{ product.get_category_display }}" style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          {% elif product.category == 'laptops' %}
+            <img src="{% static 'images/vm-laptop.svg' %}" alt="{{ product.get_category_display }}" style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          {% elif product.category == 'mens_fashion' or product.category == 'women_fashion' %}
+            <img src="{% static 'images/vm-fashion.svg' %}" alt="{{ product.get_category_display }}" style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          {% elif product.category == 'shoes' or product.category == 'sports' %}
+            <img src="{% static 'images/vm-shoes.svg' %}" alt="{{ product.get_category_display }}" style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          {% elif product.category == 'electronics' %}
+            <img src="{% static 'images/vm-gadgets.svg' %}" alt="{{ product.get_category_display }}" style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          {% else %}
+            <img src="{% static 'images/vm-home.svg' %}" alt="{{ product.get_category_display }}" style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          {% endif %}
+        </div>
+        <div>
+          <p style="color: var(--text-light); margin-bottom: 1rem;">{{ product.description }}</p>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text);">Seller:</strong> {{ product.supplier.company_name|default:product.supplier.user.username }}<br>
+            <strong style="color: var(--text);">Location:</strong> {{ product.location|default:product.supplier.location|default:"N/A" }}<br>
+            <strong style="color: var(--text);">Category:</strong> {{ product.get_category_display }}<br>
+            <strong style="color: var(--text);">Quality:</strong> {{ product.get_quality_display }}<br>
+            <strong style="color: var(--text);">Available stock:</strong> {{ product.available_quantity }}{% if product.supplier.company_name == 'VictorMart Demo Store' %} (demo stock; confirm with seller){% endif %}<br>
+            <strong style="color: var(--text);">Customer rating:</strong> {% if average_rating %}★ {{ average_rating|floatformat:1 }} ({{ review_count }} review{{ review_count|pluralize }}){% else %}Not rated yet{% endif %}<br>
+            <strong style="color: var(--text);">Price:</strong> <span style="color: #ff7f31; font-size: 1.5rem; font-weight: 700;">KSH {{ product.cost }}</span> per unit
+            <p style="color: var(--text-light); margin-top: 0.35rem;">{% if product.supplier.company_name == 'VictorMart Demo Store' %}Demo market-reference price; confirm current price and stock with the seller before paying.{% else %}Price listed by the supplier. Confirm availability and delivery before paying.{% endif %}</p>
+            {% if product.offer %}
+            <br>
+            <div style="margin-top: 0.5rem; padding: 0.75rem; background: linear-gradient(135deg, #fff3cd, #ffeeba); border: 2px solid #ffc107; border-radius: 8px; display: inline-block;">
+              <strong style="color: #856404;">🏷️ Special Offer:</strong> 
+              {% if product.offer == 'free_delivery' %}
+                <span style="color: #28a745; font-weight: 700;">🚚 Free Delivery</span>
+              {% elif product.offer == '10_percent_discount' %}
+                <span style="color: #dc3545; font-weight: 700;">🔥 10% Discount</span>
+              {% else %}
+                <span style="color: #856404; font-weight: 700;">{{ product.get_offer_display }}</span>
+              {% endif %}
+            </div>
+            {% endif %}
+          </div>
+          {% if user.is_authenticated and user.user_type == 'customer' %}
+            <form method="post" action="{% url 'products:add_to_cart' product.id %}" style="display: inline;">
+              {% csrf_token %}
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <div>
+                  <label style="display: block; margin-bottom: 0.25rem; font-weight: 600;">Quantity:</label>
+                  <input type="number" name="quantity" min="1" max="{{ product.available_quantity }}" value="1" {% if not product.available_quantity %}disabled{% endif %} style="width: 80px; padding: 0.5rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem;">
+                </div>
+                <button type="submit" {% if not product.available_quantity %}disabled{% endif %} style="background: linear-gradient(135deg, #ff7f31, #ff9a5e); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">Add to Cart</button>
+              </div>
+            </form>
+            <div style="margin-top: 1rem;">
+              <a href="{% url 'products:cart' %}" style="color: #ff7f31; text-decoration: none; font-weight: 600;">View Cart</a>
+            </div>
+          {% elif user.is_authenticated %}
+            <p style="color: #6c757d; font-style: italic;">Cart functionality is only available for customers.</p>
+          {% else %}
+            <a class="btn-secondary" href="{% url 'accounts:login' %}?next={% url 'products:product_detail' product.id %}" style="background: #6c757d; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; display: inline-block;">Login as Customer to Order</a>
+          {% endif %}
+          {% if supplier_whatsapp_url %}
+            <p style="margin-top: 1rem;">
+              <a href="{{ supplier_whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                Contact supplier on WhatsApp
+              </a>
+            </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <section id="reviews" class="dashboard-card" style="margin-bottom: 2rem;">
+      <h3 style="color: var(--text); margin-bottom: .5rem;">Customer Reviews</h3>
+      <p style="color: var(--text-light);">
+        {% if average_rating %}Average rating: ★ {{ average_rating|floatformat:1 }} out of 5 from {{ review_count }} review{{ review_count|pluralize }}.{% else %}No reviews yet. Verified buyers can be the first to review this product.{% endif %}
+      </p>
+
+      {% if reviews %}
+        <div style="display: grid; gap: 1rem; margin: 1rem 0 2rem;">
+          {% for review in reviews %}
+            <article style="padding: 1rem; background: var(--background-light); border-radius: 8px;">
+              <strong>{{ review.customer.get_full_name|default:review.customer.username }}</strong>
+              <span style="color: #a16b00; margin-left: .5rem;">{% for _ in "12345" %}{% if forloop.counter <= review.rating %}★{% endif %}{% endfor %}</span>
+              <small style="display: block; color: var(--text-light);">{{ review.created_at|date:'M d, Y' }} · Verified purchase</small>
+              <p style="margin: .5rem 0 0;">{{ review.comment|linebreaksbr }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if user.is_authenticated and user.user_type == 'customer' %}
+        {% for order in eligible_orders %}
+          {% if order.id not in existing_review_orders %}
+            <form method="post" action="{% url 'products:submit_product_review' product.id %}" style="padding: 1rem; margin-top: 1rem; border: 1px solid #e3e7ed; border-radius: 8px;">
+              {% csrf_token %}
+              <input type="hidden" name="order_id" value="{{ order.id }}">
+              <p><strong>Review your purchase from {{ order.created_at|date:'M d, Y' }}</strong></p>
+              <label for="rating-{{ order.id }}">Rating</label>
+              <select id="rating-{{ order.id }}" name="rating" required>
+                <option value="">Choose a rating</option>
+                <option value="5">5 stars</option>
+                <option value="4">4 stars</option>
+                <option value="3">3 stars</option>
+                <option value="2">2 stars</option>
+                <option value="1">1 star</option>
+              </select>
+              <label for="comment-{{ order.id }}" style="display: block; margin-top: .75rem;">Your review</label>
+              <textarea id="comment-{{ order.id }}" name="comment" rows="4" maxlength="1000" required style="width: 100%; box-sizing: border-box;"></textarea>
+              <button type="submit" style="margin-top: .75rem; background: #ff7f31; color: white; border: 0; border-radius: 7px; padding: .7rem 1rem; font-weight: 700; cursor: pointer;">Submit verified review</button>
+            </form>
+          {% endif %}
+        {% empty %}
+          <p style="color: var(--text-light);">Reviews are available after your purchase is marked paid or delivered.</p>
+        {% endfor %}
+      {% elif not user.is_authenticated %}
+        <a href="{% url 'accounts:login' %}?next={{ request.path }}">Log in to review a purchase</a>
+      {% endif %}
+    </section>
+  </div>
+</div>
+
+
+{% endblock %}

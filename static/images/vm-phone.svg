@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#fff1e8"/><stop offset="1" stop-color="#ffe0cc"/></linearGradient>
+    <linearGradient id="screen" x2="1" y2="1"><stop stop-color="#6b5cff"/><stop offset="1" stop-color="#38c6d9"/></linearGradient>
+  </defs>
+  <rect width="640" height="480" rx="28" fill="url(#bg)"/>
+  <circle cx="500" cy="94" r="52" fill="#ffb88c" opacity=".55"/>
+  <circle cx="126" cy="378" r="76" fill="#ffc7a6" opacity=".55"/>
+  <g transform="rotate(-11 320 240)">
+    <rect x="228" y="46" width="184" height="388" rx="32" fill="#1e2432"/>
+    <rect x="239" y="62" width="162" height="354" rx="23" fill="url(#screen)"/>
+    <rect x="292" y="72" width="56" height="8" rx="4" fill="#202738"/>
+    <circle cx="320" cy="396" r="8" fill="#dbeafe"/>
+    <path d="M259 295c36-66 87-92 133-122v220H259z" fill="#fff" opacity=".18"/>
+    <circle cx="350" cy="190" r="38" fill="#fff" opacity=".17"/>
+    <path d="M264 344c34-52 83-70 132-77v126H264z" fill="#ffb66f" opacity=".9"/>
+  </g>
+  <text x="320" y="458" text-anchor="middle" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#34304a">PHONES &amp; TABLETS</text>
+</svg>

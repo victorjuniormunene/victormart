@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}VictorMart | Shop smarter across Kenya{% endblock %}
+{% block content %}
+<style>
+  .vm-home {
+    --vm-ink: #17233c;
+    --vm-muted: #68758a;
+    --vm-brand: #087f70;
+    --vm-brand-dark: #075e55;
+    --vm-accent: #ff8a45;
+    --vm-surface: #f3f7f6;
+    color: var(--vm-ink);
+    width: 100vw;
+    margin: -1.25rem 0 0 calc(50% - 50vw);
+    padding-bottom: 3rem;
+    background:
+      radial-gradient(ellipse at 92% 43%, rgba(255, 195, 141, .12), transparent 28rem),
+      linear-gradient(180deg, #f8faf9 0%, #fff 58%, #f8faf9 100%);
+  }
+  .vm-wrap { width: min(1200px, calc(100% - 2.5rem)); margin: 0 auto; }
+  .vm-hero {
+    min-height: 490px;
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    align-items: center;
+    gap: 2rem;
+    overflow: hidden;
+    position: relative;
+    padding: 4.25rem max(calc((100vw - 1200px) / 2), 1.25rem);
+    color: #fff;
+    background:
+      radial-gradient(ellipse at 78% 12%, rgba(255, 174, 116, .3), transparent 25rem),
+      radial-gradient(ellipse at 74% 100%, rgba(68, 210, 170, .24), transparent 27rem),
+      linear-gradient(115deg, #10243b 0%, #124b58 52%, #087f70 100%);
+    isolation: isolate;
+  }
+  .vm-hero::before, .vm-hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    background: rgba(255,255,255,.065);
+    box-shadow: inset 0 0 80px rgba(255,255,255,.025);
+  }
+  .vm-hero::before { width: 430px; height: 430px; right: 6%; top: -230px; }
+  .vm-hero::after { width: 320px; height: 320px; left: 36%; bottom: -240px; }
+  .vm-hero-copy { max-width: 610px; }
+  .vm-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    margin: 0 0 1rem;
+    padding: .5rem .85rem;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 99px;
+    color: #e8fff9;
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .vm-eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #79e0b5; }
+  .vm-hero h1 { max-width: 620px; margin: 0 0 1rem; font-size: clamp(2.6rem, 5vw, 4.4rem); line-height: 1.03; letter-spacing: -.055em; }
+  .vm-hero h1 span { color: #ffb27b; }
+  .vm-hero-copy > p { max-width: 540px; margin: 0; color: rgba(255,255,255,.82); font-size: 1.08rem; line-height: 1.75; }
+  .vm-hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.8rem; }
+  .vm-button {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 48px; padding: .8rem 1.25rem; border-radius: 10px;
+    font-weight: 750; text-decoration: none; transition: transform .2s, box-shadow .2s, background .2s;
+  }
+  .vm-button:hover { transform: translateY(-2px); }
+  .vm-button-primary { color: #17304a; background: #ffb27b; box-shadow: 0 10px 24px rgba(0,0,0,.18); }
+  .vm-button-primary:hover { background: #ffc294; }
+  .vm-button-ghost { border: 1px solid rgba(255,255,255,.45); color: #fff; }
+  .vm-button-ghost:hover { background: rgba(255,255,255,.1); }
+  .vm-hero-art { position: relative; display: flex; justify-content: center; align-items: center; min-height: 330px; }
+  .vm-hero-art img { display: block; width: min(100%, 470px); max-height: 350px; object-fit: contain; filter: drop-shadow(0 24px 28px rgba(0,0,0,.25)); }
+  .vm-hero-note {
+    position: absolute; right: 1%; bottom: 1%; padding: .9rem 1rem;
+    border: 1px solid rgba(255,255,255,.3); border-radius: 14px;
+    background: linear-gradient(135deg, rgba(255,255,255,.2), rgba(255,255,255,.08));
+    backdrop-filter: blur(12px);
+    box-shadow: 0 14px 36px rgba(0,0,0,.22);
+  }
+  .vm-hero-note strong, .vm-hero-note span { display: block; }
+  .vm-hero-note strong { font-size: .95rem; }
+  .vm-hero-note span { margin-top: .2rem; color: rgba(255,255,255,.76); font-size: .78rem; }
+  .vm-slider-dots { display: flex; gap: .45rem; margin-top: 1.7rem; }
+  .vm-slider-dot { width: 22px; height: 6px; border: 0; border-radius: 9px; background: rgba(255,255,255,.38); cursor: pointer; transition: width .2s, background .2s; }
+  .vm-slider-dot[aria-current="true"] { width: 38px; background: #ffb27b; }
+  .vm-highlights {
+    background: linear-gradient(90deg, #fff 0%, #f4fbf8 50%, #fff 100%);
+    border-bottom: 1px solid #e4ece9;
+    box-shadow: 0 10px 28px rgba(27, 55, 62, .035);
+  }
+  .vm-highlights-inner { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .vm-highlight { display: flex; align-items: center; gap: .9rem; min-height: 94px; padding: 1rem 1.4rem; }
+  .vm-highlight + .vm-highlight { border-left: 1px solid #e8edf2; }
+  .vm-highlight-mark {
+    display: grid; place-items: center; flex: 0 0 46px; height: 46px;
+    border: 1px solid #ccece2; border-radius: 14px; color: var(--vm-brand-dark);
+    background: linear-gradient(145deg, #e6fbf3, #fff);
+    box-shadow: 0 5px 12px rgba(8, 127, 112, .08);
+    font-weight: 850;
+  }
+  .vm-highlight strong, .vm-highlight span { display: block; }
+  .vm-highlight strong { font-size: .91rem; }
+  .vm-highlight span { margin-top: .2rem; color: var(--vm-muted); font-size: .8rem; }
+  .vm-section { padding: 4.2rem 0 0; }
+  .vm-section-categories { padding-top: 3.5rem; }
+  .vm-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.4rem; }
+  .vm-section-heading h2 {
+    margin: 0; color: var(--vm-ink); font-size: clamp(1.65rem, 3vw, 2.25rem);
+    letter-spacing: -.04em;
+  }
+  .vm-section-heading h2::after {
+    content: ""; display: block; width: 46px; height: 4px; margin-top: .65rem;
+    border-radius: 9px; background: linear-gradient(90deg, var(--vm-brand), #ff9a5c);
+  }
+  .vm-section-heading p { max-width: 600px; margin: .45rem 0 0; color: var(--vm-muted); line-height: 1.6; }
+  .vm-text-link { color: var(--vm-brand-dark); font-weight: 750; text-decoration: none; white-space: nowrap; }
+  .vm-text-link:hover { text-decoration: underline; }
+  .vm-category-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .85rem; }
+  .vm-category {
+    display: flex; align-items: center; gap: .75rem; min-height: 82px;
+    padding: .9rem; border: 1px solid #e7edf1; border-radius: 16px;
+    color: var(--vm-ink); background: linear-gradient(145deg, #fff, #f9fbfb); text-decoration: none;
+    box-shadow: 0 7px 18px rgba(19,38,61,.05);
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .vm-category:hover {
+    transform: translateY(-4px); border-color: #82cbbb;
+    box-shadow: 0 15px 28px rgba(19,38,61,.1);
+  }
+  .vm-category-mark {
+    display: grid; place-items: center; flex: 0 0 46px; height: 46px;
+    border: 1px solid rgba(8,127,112,.08); border-radius: 14px;
+    color: #087f70; background: linear-gradient(145deg, #d9f6ec, #f0fcf8);
+    font-size: 1.15rem; font-weight: 850;
+  }
+  .vm-category:nth-child(5n + 2) .vm-category-mark { color: #b95720; background: linear-gradient(145deg, #ffe8d9, #fff5ed); border-color: #ffecdf; }
+  .vm-category:nth-child(5n + 3) .vm-category-mark { color: #315eb2; background: linear-gradient(145deg, #e2edff, #f2f6ff); border-color: #e4edff; }
+  .vm-category:nth-child(5n + 4) .vm-category-mark { color: #8154a7; background: linear-gradient(145deg, #f0e5fb, #faf5ff); border-color: #f0e7f8; }
+  .vm-category:nth-child(5n) .vm-category-mark { color: #a16d0c; background: linear-gradient(145deg, #fff1c9, #fff9e8); border-color: #fff2d6; }
+  .vm-category strong, .vm-category small { display: block; }
+  .vm-category strong { font-size: .85rem; line-height: 1.25; }
+  .vm-category small { margin-top: .25rem; color: var(--vm-muted); font-size: .75rem; }
+  .vm-product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+  .vm-product {
+    overflow: hidden; border: 1px solid #e7edf1; border-radius: 18px;
+    background: #fff; box-shadow: 0 8px 24px rgba(19,38,61,.06);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .vm-product:hover { transform: translateY(-5px); box-shadow: 0 18px 34px rgba(19,38,61,.13); }
+  .vm-product-image {
+    display: grid; place-items: center; height: 220px; overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 40%, rgba(255,255,255,.9), transparent 60%),
+      linear-gradient(145deg, #e9f5f2, #f7f5f1);
+  }
+  .vm-product-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+  .vm-product:hover .vm-product-image img { transform: scale(1.04); }
+  .vm-product-body { padding: 1.05rem; }
+  .vm-product-category {
+    display: inline-block; padding: .3rem .55rem; border-radius: 99px;
+    color: var(--vm-brand-dark); background: #e9f8f3;
+    font-size: .68rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
+  }
+  .vm-product h3 { overflow: hidden; margin: .65rem 0 .45rem; color: var(--vm-ink); font-size: 1rem; text-overflow: ellipsis; white-space: nowrap; }
+  .vm-product-price { color: #087f70; font-size: 1.2rem; font-weight: 900; }
+  .vm-product-meta {
+    display: flex; justify-content: space-between; gap: .5rem; margin-top: .75rem;
+    padding-top: .65rem; border-top: 1px solid #edf1f2; color: var(--vm-muted); font-size: .75rem;
+  }
+  .vm-product-link {
+    display: block; margin-top: .9rem; padding: .72rem;
+    border: 0; border-radius: 10px; color: #fff; text-align: center;
+    font-size: .84rem; font-weight: 800; text-decoration: none;
+    background: linear-gradient(100deg, #087f70, #0b9481);
+    box-shadow: 0 7px 16px rgba(8,127,112,.16);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .vm-product-link:hover { color: #fff; transform: translateY(-1px); box-shadow: 0 10px 20px rgba(8,127,112,.24); }
+  .vm-empty { grid-column: 1/-1; padding: 2rem; border: 1px dashed #cbd6dd; border-radius: 15px; color: var(--vm-muted); text-align: center; background: #fff; }
+  .vm-empty h3 { margin: 0 0 .4rem; color: var(--vm-ink); }
+  .vm-seller-cta {
+    display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+    margin-top: 4rem; padding: 2.3rem 2.5rem; border: 1px solid rgba(255,255,255,.16);
+    border-radius: 22px; color: #fff;
+    background:
+      radial-gradient(circle at 82% 0%, rgba(255,177,123,.3), transparent 18rem),
+      linear-gradient(115deg, #11263c, #087f70);
+    box-shadow: 0 18px 38px rgba(16, 54, 64, .18);
+  }
+  .vm-seller-cta h2 { margin: 0 0 .45rem; font-size: clamp(1.45rem, 3vw, 2rem); }
+  .vm-seller-cta p { max-width: 640px; margin: 0; color: rgba(255,255,255,.78); line-height: 1.6; }
+  @media (max-width: 900px) {
+    .vm-hero { grid-template-columns: 1fr .8fr; min-height: 400px; }
+    .vm-category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .vm-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .vm-home { margin-top: -1rem; }
+    .vm-wrap { width: min(100% - 1.5rem, 480px); }
+    .vm-hero { display: block; min-height: 0; padding: 2.6rem 1.25rem 1.5rem; }
+    .vm-hero h1 { font-size: clamp(2.4rem, 13vw, 3.5rem); }
+    .vm-hero-art { min-height: 175px; margin-top: .35rem; }
+    .vm-hero-art img { max-height: 190px; }
+    .vm-hero-note { right: 0; bottom: -.3rem; padding: .7rem .8rem; }
+    .vm-highlights-inner { grid-template-columns: 1fr; padding: .4rem 0; }
+    .vm-highlight { min-height: 72px; padding: .6rem .3rem; }
+    .vm-highlight + .vm-highlight { border-top: 1px solid #e8edf2; border-left: 0; }
+    .vm-section { padding-top: 3rem; }
+    .vm-section-categories { padding-top: 2.6rem; }
+    .vm-section-heading { align-items: start; flex-direction: column; }
+    .vm-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+    .vm-category { gap: .55rem; min-height: 74px; padding: .65rem; }
+    .vm-category-mark { flex-basis: 38px; height: 38px; }
+    .vm-category strong { font-size: .76rem; }
+    .vm-product-grid { gap: .65rem; }
+    .vm-product-image { height: 160px; }
+    .vm-product-body { padding: .75rem; }
+    .vm-product h3 { font-size: .87rem; }
+    .vm-product-price { font-size: 1rem; }
+    .vm-product-meta { flex-direction: column; gap: .2rem; }
+    .vm-seller-cta { align-items: start; flex-direction: column; margin-top: 3rem; padding: 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vm-home *, .vm-home *::before, .vm-home *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+  }
+</style>
+
+<div class="vm-home">
+  <section class="vm-hero" aria-label="VictorMart shopping highlights">
+    <div class="vm-hero-copy">
+      <p class="vm-eyebrow" id="vm-hero-eyebrow">Everyday finds, all in one place</p>
+      <h1 id="vm-hero-title">A better way to <span>shop Kenya.</span></h1>
+      <p id="vm-hero-description">Discover phones, fashion, home essentials and more from sellers across Kenya. Find your next great buy on VictorMart.</p>
+      <div class="vm-hero-actions">
+        <a class="vm-button vm-button-primary" href="{% url 'suppliers:product_list' %}">Explore the shop</a>
+        <a class="vm-button vm-button-ghost" href="{% url 'accounts:register' %}?role=supplier">Sell on VictorMart</a>
+      </div>
+      <div class="vm-slider-dots" role="group" aria-label="Choose a shopping highlight">
+        <button class="vm-slider-dot" type="button" aria-label="Shopping highlight 1" aria-current="true"></button>
+        <button class="vm-slider-dot" type="button" aria-label="Shopping highlight 2" aria-current="false"></button>
+        <button class="vm-slider-dot" type="button" aria-label="Shopping highlight 3" aria-current="false"></button>
+      </div>
+    </div>
+    <div class="vm-hero-art">
+      <img src="{% static 'images/vm-shopping-banner.svg' %}" alt="VictorMart selection of phones, fashion and shopping essentials">
+      <div class="vm-hero-note"><strong>Shop from local sellers</strong><span>Find products from across Kenya</span></div>
+    </div>
+  </section>
+
+  <section class="vm-highlights" aria-label="Shopping benefits">
+    <div class="vm-wrap vm-highlights-inner">
+      <div class="vm-highlight"><span class="vm-highlight-mark">{{ available_product_count }}</span><div><strong>Products in stock</strong><span>Live listings available to explore</span></div></div>
+      <div class="vm-highlight"><span class="vm-highlight-mark">{{ active_seller_count }}</span><div><strong>Active sellers</strong><span>With products currently in stock</span></div></div>
+      <div class="vm-highlight"><span class="vm-highlight-mark">{{ home_categories|length }}</span><div><strong>Product categories</strong><span>Find a fit for your home, work and style</span></div></div>
+    </div>
+  </section>
+
+  <section class="vm-section vm-section-categories vm-wrap" aria-labelledby="vm-category-heading">
+    <div class="vm-section-heading">
+      <div><h2 id="vm-category-heading">Browse by category</h2><p>Start with what you need and explore the latest listings.</p></div>
+      <a class="vm-text-link" href="{% url 'suppliers:product_list' %}">View all products &rarr;</a>
+    </div>
+    <div class="vm-category-grid">
+      {% for category in home_categories %}
+      <a class="vm-category" href="{% url 'suppliers:product_list' %}?category={{ category.slug }}">
+        <span class="vm-category-mark">{{ category.label|slice:":1" }}</span>
+        <span><strong>{{ category.label }}</strong><small>{{ category.count }} {% if category.count == 1 %}item{% else %}items{% endif %}</small></span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="vm-section vm-wrap" aria-labelledby="vm-products-heading">
+    <div class="vm-section-heading">
+      <div><h2 id="vm-products-heading">Recently added</h2><p>Fresh products currently available from our marketplace.</p></div>
+      <a class="vm-text-link" href="{% url 'suppliers:product_list' %}">Shop all products &rarr;</a>
+    </div>
+    <div class="vm-product-grid">
+      {% for product in featured_products %}
+      <article class="vm-product">
+        <a href="{% url 'suppliers:product_detail' product.pk %}" aria-label="View {{ product.name }}">
+          <div class="vm-product-image">
+            {% if product.image_url %}
+              <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">
+            {% elif product.category == 'phones' %}
+              <img src="{% static 'images/vm-phone.svg' %}" alt="{{ product.name }}" loading="lazy">
+            {% elif product.category == 'laptops' %}
+              <img src="{% static 'images/vm-laptop.svg' %}" alt="{{ product.name }}" loading="lazy">
+            {% elif product.category == 'mens_fashion' or product.category == 'women_fashion' %}
+              <img src="{% static 'images/vm-fashion.svg' %}" alt="{{ product.name }}" loading="lazy">
+            {% elif product.category == 'shoes' or product.category == 'sports' %}
+              <img src="{% static 'images/vm-shoes.svg' %}" alt="{{ product.name }}" loading="lazy">
+            {% elif product.category == 'electronics' %}
+              <img src="{% static 'images/vm-gadgets.svg' %}" alt="{{ product.name }}" loading="lazy">
+            {% else %}
+              <img src="{% static 'images/vm-home.svg' %}" alt="{{ product.name }}" loading="lazy">
+            {% endif %}
+          </div>
+        </a>
+        <div class="vm-product-body">
+          <span class="vm-product-category">{{ product.get_category_display }}</span>
+          <h3 title="{{ product.name }}">{{ product.name }}</h3>
+          <div class="vm-product-price">KES {{ product.cost|floatformat:0 }}</div>
+          <div class="vm-product-meta"><span>{{ product.supplier.company_name|default:product.supplier.user.username }}</span><span>{{ product.location|default:product.supplier.location|default:"Kenya" }}</span></div>
+          <a class="vm-product-link" href="{% url 'suppliers:product_detail' product.pk %}">View product</a>
+        </div>
+      </article>
+      {% empty %}
+      <div class="vm-empty">
+        <h3>New finds are on the way</h3>
+        <p>There are no in-stock listings to feature right now. Browse the shop again soon, or join VictorMart as a seller.</p>
+        <a class="vm-text-link" href="{% url 'accounts:register' %}?role=supplier">Become a seller &rarr;</a>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="vm-wrap vm-seller-cta">
+    <div><h2>Bring your products to VictorMart</h2><p>Join sellers reaching customers across Kenya. Create your account, list your products and grow your business online.</p></div>
+    <a class="vm-button vm-button-primary" href="{% url 'accounts:register' %}?role=supplier">Start selling</a>
+  </section>
+</div>
+
+<script>
+  (() => {
+    const slides = [
+      {
+        eyebrow: "Everyday finds, all in one place",
+        title: "A better way to",
+        accent: "shop Kenya.",
+        description: "Discover phones, fashion, home essentials and more from sellers across Kenya. Find your next great buy on VictorMart."
+      },
+      {
+        eyebrow: "Good finds start here",
+        title: "Make room for",
+        accent: "something great.",
+        description: "Browse a growing selection of useful products, compare your options and shop at your own pace."
+      },
+      {
+        eyebrow: "For your home, work and style",
+        title: "Find what fits",
+        accent: "your everyday.",
+        description: "From gadgets and computers to shoes and home products, explore the categories that make daily life easier."
+      }
+    ];
+    const eyebrow = document.getElementById("vm-hero-eyebrow");
+    const title = document.getElementById("vm-hero-title");
+    const description = document.getElementById("vm-hero-description");
+    const dots = Array.from(document.querySelectorAll(".vm-slider-dot"));
+    if (!eyebrow || !title || !description || !dots.length) return;
+
+    let activeSlide = 0;
+    let timer;
+    const showSlide = (index) => {
+      activeSlide = index;
+      eyebrow.textContent = slides[index].eyebrow;
+      title.replaceChildren(document.createTextNode(`${slides[index].title} `));
+      const accent = document.createElement("span");
+      accent.textContent = slides[index].accent;
+      title.append(accent);
+      description.textContent = slides[index].description;
+      dots.forEach((dot, dotIndex) => dot.setAttribute("aria-current", String(dotIndex === index)));
+    };
+    const startTimer = () => {
+      window.clearInterval(timer);
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        timer = window.setInterval(() => showSlide((activeSlide + 1) % slides.length), 6000);
+      }
+    };
+    dots.forEach((dot, index) => dot.addEventListener("click", () => {
+      showSlide(index);
+      startTimer();
+    }));
+    startTimer();
+  })();
+</script>
+{% endblock %}
